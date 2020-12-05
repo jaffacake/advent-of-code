@@ -7,16 +7,23 @@ import (
 )
 
 type policy struct {
-	min int
-	max int
-	letter string
-	password string
+	int1     int
+	int2     int
+	letter   string
+	password []byte
 }
 
 func (p policy) testPassword() bool {
-	containsCount := strings.Count(p.password, p.letter)
+	containsCount := strings.Count(string(p.password), p.letter)
 
-	return containsCount >= p.min && containsCount <= p.max
+	return containsCount >= p.int1 && containsCount <= p.int2
+}
+
+func (p policy) testSecondPolicy() bool {
+	matchCharacter := string(p.password[p.int1 - 1]) == p.letter
+	matchCharacter2 := string(p.password[p.int2 - 1]) == p.letter
+
+	return (matchCharacter || matchCharacter2) && !(matchCharacter && matchCharacter2)
 }
 
 func ValidatePasswords(data []byte) int {
@@ -33,13 +40,13 @@ func ValidatePasswords(data []byte) int {
 
 		p := policy{
 			letter:   policyData[3],
-			password: policyData[4],
+			password: []byte(policyData[4]),
 		}
 
-		p.min, _ = strconv.Atoi(policyData[1])
-		p.max, _ = strconv.Atoi(policyData[2])
+		p.int1, _ = strconv.Atoi(policyData[1])
+		p.int2, _ = strconv.Atoi(policyData[2])
 
-		if p.testPassword() {
+		if p.testSecondPolicy() {
 			correctPasswords++
 		}
 	}
