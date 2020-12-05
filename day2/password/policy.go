@@ -20,10 +20,16 @@ func (p policy) testPassword() bool {
 }
 
 func (p policy) testSecondPolicy() bool {
-	matchCharacter := string(p.password[p.int1 - 1]) == p.letter
-	matchCharacter2 := string(p.password[p.int2 - 1]) == p.letter
+	matches := 0
+	if string(p.password[p.int1 - 1]) == p.letter {
+		matches++
+	}
 
-	return (matchCharacter || matchCharacter2) && !(matchCharacter && matchCharacter2)
+	if string(p.password[p.int2 - 1]) == p.letter {
+		matches++
+	}
+
+	return matches == 1
 }
 
 func ValidatePasswords(data []byte) int {
