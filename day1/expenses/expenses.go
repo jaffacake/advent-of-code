@@ -7,14 +7,19 @@ import (
 
 func Calculate(data []byte) (int, error) {
 	values := strings.Split(string(data), "\n")
+	intValues := make([]int, len(values) - 1)
 
-	for _, value := range values {
-		if intValue, err := strconv.Atoi(value); err == nil {
-			for _, value2 := range values {
-				if intValue2, err := strconv.Atoi(value2); err == nil {
-					if intValue + intValue2 == 2020 {
-						return intValue * intValue2, nil
-					}
+	for i, value := range values {
+		if intValue, err := strconv.Atoi(value); err == nil && intValue != 0 {
+			intValues[i] = intValue
+		}
+	}
+
+	for _, value := range intValues {
+		for _, value2 := range intValues {
+			for _, value3 := range intValues {
+				if value + value2 + value3 == 2020 {
+					return value * value2 * value3, nil
 				}
 			}
 		}
