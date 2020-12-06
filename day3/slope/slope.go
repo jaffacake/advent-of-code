@@ -12,7 +12,7 @@ type slope struct {
 	treesHit int
 }
 
-func (s *slope) start() {
+func (s *slope) start(right int, down int) {
 	for {
 		fmt.Println("pos: ", s.currentPositionX, s.currentPositionY)
 
@@ -30,8 +30,8 @@ func (s *slope) start() {
 			s.treesHit++
 		}
 
-		s.currentPositionX++
-		s.currentPositionY += 3
+		s.currentPositionX += down
+		s.currentPositionY += right
 	}
 }
 
@@ -54,11 +54,30 @@ func initialiseSlope(data []byte) slope {
 	return s
 }
 
+func (s *slope) reset() {
+	s.treesHit = 0
+	s.currentPositionX = 0
+	s.currentPositionY = 0
+}
+
 func Tobbogan(data []byte) int {
 	s := initialiseSlope(data)
 
-	fmt.Println(s.geometry)
-	s.start()
+	var slopes = make(map[int][]int)
+	slopes[0] = []int{1,1}
+	slopes[1] = []int{3,1}
+	slopes[2] = []int{5,1}
+	slopes[3] = []int{7,1}
+	slopes[4] = []int{1,2}
 
-	return s.treesHit
+	fmt.Println(s.geometry)
+	var result [5]int
+	for i, slope := range slopes {
+		s.start(slope[0], slope[1])
+		result[i] = s.treesHit
+		s.reset()
+	}
+
+
+	return result[0] * result[1] * result[2] * result[3] * result[4]
 }
