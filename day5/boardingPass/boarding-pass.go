@@ -40,5 +40,11 @@ func CalculateSeat(data []byte) int {
 
 	sort.Ints(seatIds)
 
+	for i := 0; i < len(seatIds); i++ {
+		if seatIds[i+1] != seatIds[i] + 1 {
+			return seatIds[i] + 1
+		}
+	}
+
 	return seatIds[len(seatIds)-1]
 }
