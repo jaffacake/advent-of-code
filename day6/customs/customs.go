@@ -9,19 +9,27 @@ func CustomsQuestionnaire(data []byte) int {
 	values := strings.Split(string(data), "\n\n")
 
 	answersTotal := 0
-	var answers map[string]bool
+	var answers map[string]int
 	for _, questionnaireGroup := range values {
-		answers = make(map[string]bool)
+		answers = make(map[string]int)
 		groupAnswers := strings.Split(questionnaireGroup, "\n")
 
 		for _, groupAnswer := range groupAnswers {
 			for _, groupIndividualAnswers := range []byte(groupAnswer) {
-				answers[string(groupIndividualAnswers)] = true
+				answers[string(groupIndividualAnswers)] += 1
 			}
 		}
 
-		fmt.Println(len(answers))
-		answersTotal += len(answers)
+		fmt.Println(answers)
+		fmt.Println(len(groupAnswers))
+		answersForGroup := 0
+		for _, answersCheck := range answers {
+			if answersCheck == len(groupAnswers) {
+				answersForGroup += 1
+			}
+		}
+		fmt.Println(answersForGroup)
+		answersTotal += answersForGroup
 	}
 
 	return answersTotal
