@@ -1,7 +1,6 @@
 package bags
 
 import (
-	"fmt"
 	"strconv"
 	"strings"
 )
@@ -29,34 +28,29 @@ func CalculateBags(data []byte) int {
 			bagRules[rules[0]] = rulesMap
 		}
 	}
-	fmt.Println(bagRules)
 
 	// Calculate which bags can contain shiny gold bags
 	result := 0
-	for ruleBag, rule := range bagRules {
-		count := canContainShinyGoldBags(bagRules, rule)
 
-		if count > 0 {
-			fmt.Println(ruleBag)
+	for ruleBag, rule := range bagRules {
+		if strings.Contains(ruleBag, "shiny gold bag") {
+			result += canContainShinyGoldBags(bagRules, rule)
 		}
-		result += count
 	}
-	fmt.Println(result)
 
 	return result
 }
 
 func canContainShinyGoldBags(bagRules map[string]map[string]int, rules map[string]int) int {
-	count := 0
-	for bag, _ := range rules {
-		if strings.Contains(bag, "shiny gold bag") {
-			return 1
+	bagCount := 0
+	for bag, numberOfBags := range rules {
+		if strings.Contains(bag, "contain no other bags") {
+			return bagCount
 		}
-		count += canContainShinyGoldBags(bagRules, bagRules[bag])
+
+		bagCount += numberOfBags
+		bagCount += numberOfBags * canContainShinyGoldBags(bagRules, bagRules[bag])
 	}
 
-	if count > 0 {
-		return 1
-	}
-	return 0
+	return bagCount
 }
