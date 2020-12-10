@@ -1,6 +1,7 @@
 package execution
 
 import (
+	"errors"
 	"fmt"
 	"strconv"
 	"strings"
@@ -12,16 +13,10 @@ type execution struct {
 }
 
 func RunExecution(data []byte) int {
-	// acc
-	accumulatorValue := 0
-	// nop - ignore
-	// jmp - move index/pointer
-
 	values := strings.Split(string(data), "\n")
 	var executions []execution
 
 	for _, value := range values {
-
 		e := execution{
 			action: value[:3],
 		}
@@ -30,13 +25,40 @@ func RunExecution(data []byte) int {
 	}
 	fmt.Println(executions)
 
-	executionHistory := []int{}
+	for i, value := range executions {
+		originalExecution := executions[i]
+		switch value.action {
+		case "nop":
+			executions[i].action = "jmp"
+		case "jmp":
+			executions[i].action = "nop"
+		default:
+			continue
+		}
 
-	// run executions
+		result, err := run(executions)
+
+		if err != nil {
+			executions[i] = originalExecution
+			continue
+		}
+
+		return result
+	}
+
+	return 0
+}
+
+func run(executions []execution) (int, error) {
+	executionHistory := []int{}
+	accumulatorValue := 0
+
 	i := 0
 	for i < len(executions) {
-		executionHistory = append(executionHistory, i)
 		e := executions[i]
+
+		executionHistory = append(executionHistory, i)
+
 		if e.action == "acc" {
 			accumulatorValue += e.value
 			i++
@@ -46,15 +68,14 @@ func RunExecution(data []byte) int {
 			// must be jump
 			i += e.value
 		}
-
 		if Find(executionHistory, i) {
-			break;
+			return 0, errors.New("loop")
 		}
 	}
 
 	fmt.Println(executionHistory)
 
-	return accumulatorValue
+	return accumulatorValue, nil
 }
 
 func Find(slice []int, val int) bool {
