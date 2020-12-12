@@ -14,5 +14,5 @@ func main()  {
 		return
 	}
 
-	fmt.Println(cypher.FindWeakness(data))
+	fmt.Println(cypher.CalculateWeaknessArea(data))
 }
