@@ -14,5 +14,5 @@ func main() {
 		return
 	}
 
-	fmt.Println(adapter.CalculateJolts(data))
+	fmt.Println(adapter.CalculatePossibleCombinations(data))
 }
